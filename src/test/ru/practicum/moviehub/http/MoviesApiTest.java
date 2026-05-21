@@ -291,7 +291,7 @@ public class MoviesApiTest {
         int statusCode = deleteResponse.statusCode();
         JsonObject responseBody = gson.fromJson(deleteResponse.body(), JsonObject.class);
         assertEquals(404, statusCode);
-        assertEquals("Фильм с id "+ 111 + " не найден",  responseBody.get("details").getAsString());
+        assertEquals("Фильм с id " + 111 + " не найден",  responseBody.get("details").getAsString());
     }
 
     @Test
@@ -307,8 +307,8 @@ public class MoviesApiTest {
         JsonObject responseBody = gson.fromJson(deleteResponse.body(), JsonObject.class);
         assertEquals(400, statusCode);
         assertEquals("ID должен быть целым числом",  responseBody.get("details").getAsString());
-
     }
+
     private void addMovie() throws IOException, InterruptedException {
         Movie movie1 = new Movie(1997, "Титаник");
         Movie movie2 = new Movie(2001, "Шрек");
