@@ -153,7 +153,7 @@ public class MoviesApiTest {
         JsonObject responseBody = gson.fromJson(response.body(), JsonObject.class);
         assertEquals(422, response.statusCode());
         assertEquals("Ошибка валидации", responseBody.get("error").getAsString());
-        assertEquals("год должен быть между 1888 и "+ (now+1), responseBody.get("details").getAsString());
+        assertEquals("год должен быть между 1888 и " + (now + 1), responseBody.get("details").getAsString());
     }
 
     @Test
