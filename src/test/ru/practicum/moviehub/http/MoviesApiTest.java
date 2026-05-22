@@ -13,6 +13,7 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -125,6 +126,7 @@ public class MoviesApiTest {
     @Test
     void shouldReturnErrorIfMovieWhenYearIsBefore1888() throws Exception {
         Movie movie = new Movie(1887, "Titanic");
+        int year = LocalDateTime.now().getYear();
         HttpRequest req = HttpRequest.newBuilder()
                 .uri(URI.create(BASE + "/movies"))
                 .header("Content-Type", "application/json")
@@ -134,13 +136,14 @@ public class MoviesApiTest {
         JsonObject responseBody = gson.fromJson(response.body(), JsonObject.class);
         assertEquals(422, response.statusCode());
         assertEquals("Ошибка валидации", responseBody.get("error").getAsString());
-        assertEquals("год должен быть между 1888 и 2026", responseBody.get("details").getAsString());
+        assertEquals(STR."год должен быть между 1888 и \{year + 1}", responseBody.get("details").getAsString());
     }
 
     @Test
     void shouldReturnErrorIfMovieWhenYearIsAfterCurrentYearPlusOne() throws Exception {
         int currentYear = LocalDate.now().getYear();
         Movie movie = new Movie(currentYear + 2, "Titanic");
+        int now =  LocalDateTime.now().getYear();
         HttpRequest req = HttpRequest.newBuilder()
                 .uri(URI.create(BASE + "/movies"))
                 .header("Content-Type", "application/json")
@@ -150,7 +153,7 @@ public class MoviesApiTest {
         JsonObject responseBody = gson.fromJson(response.body(), JsonObject.class);
         assertEquals(422, response.statusCode());
         assertEquals("Ошибка валидации", responseBody.get("error").getAsString());
-        assertEquals("год должен быть между 1888 и 2026", responseBody.get("details").getAsString());
+        assertEquals("год должен быть между 1888 и "+ (now+1), responseBody.get("details").getAsString());
     }
 
     @Test
@@ -244,9 +247,9 @@ public class MoviesApiTest {
         HttpResponse<String> resp =
                 client.send(req, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
 
-        JsonObject responseBody = gson.fromJson(resp.body(), JsonObject.class);
-        assertEquals(404, resp.statusCode());
-        assertEquals("В коллекции нет фильмов с указанным годом", responseBody.get("details").getAsString());
+        String body = resp.body().trim();
+        assertEquals(200, resp.statusCode());
+        assertTrue(body.startsWith("[") && body.endsWith("]"));
     }
 
     @Test

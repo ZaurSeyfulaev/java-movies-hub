@@ -21,7 +21,7 @@ public class MoviesStore {
         List<String> errors = new ArrayList<>();
         int year = LocalDate.now().getYear();
         if (movie.getYear() < 1888 || movie.getYear() > year + 1) {
-            errors.add("год должен быть между 1888 и 2026");
+            errors.add(STR."год должен быть между 1888 и \{year + 1}");
         }
         if (movie.getTitle().isEmpty()) {
             errors.add("название не должно быть пустым");
